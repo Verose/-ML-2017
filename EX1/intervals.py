@@ -1,5 +1,6 @@
 from numpy import *
 
+
 def find_best_interval(xs, ys, k):
     assert all(array(xs) == array(sorted(xs))), "xs must be sorted!"
 
@@ -26,28 +27,28 @@ def find_best_interval(xs, ys, k):
             # Exhaust all the options for the last interval. Each interval boundary is marked as either
             # 0 (Before first point), 1 (after first point, before second), ..., m (after last point)
             options = []
-            for l in range(0,i+1):  
-                next_errors = E[l,j-1] + (cy[i]-cy[l]) + concatenate([[0], cumsum((-1)**(ys[arange(l, i)] == 1))])
+            for l in range(0, i+1):
+                next_errors = E[l, j-1] + (cy[i]-cy[l]) + concatenate([[0], cumsum((-1)**(ys[arange(l, i)] == 1))])
                 min_error = argmin(next_errors)
-                options.append((next_errors[min_error], (l, arange(l,i+1)[min_error])))
+                options.append((next_errors[min_error], (l, arange(l, i+1)[min_error])))
 
-            E[i,j], P[i][j] = min(options)
+            E[i, j], P[i][j] = min(options)
     
     # Extract best interval set and its error count
     best = []
     cur = P[m][k]
-    for i in range(k,0,-1):
+    for i in range(k, 0, -1):
         best.append(cur)
         cur = P[cur[0]][i-1]       
-        if cur == None:
+        if cur is None:
             break 
     best = sorted(best)
-    besterror = E[m,k]
+    best_error = E[m, k]
     
     # Convert interval boundaries to numbers in [0,1]
     exs = concatenate([[0], xs, [1]])
     representatives = (exs[1:]+exs[:-1]) / 2.0
-    intervals = [(representatives[l], representatives[u]) for l,u in best]
+    intervals = [(representatives[l], representatives[u]) for l, u in best]
     
-    return intervals, besterror
+    return intervals, best_error
 
