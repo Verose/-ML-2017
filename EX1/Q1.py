@@ -10,7 +10,7 @@ def sample_points_from_probability(size):
     xs = numpy.random.uniform(size=size)
     ys = numpy.array([])
     xs.sort()
-    for x in xs:
+    for x in numpy.nditer(xs):
         if 0 <= x <= 0.25 or 0.5 <= x <= 0.75:
             y = numpy.random.choice(numpy.arange(0, 2), p=[0.2, 0.8])
         else:
