@@ -1,6 +1,11 @@
+from optparse import OptionParser
+
 import matplotlib.pyplot as plt
 import numpy
+
 from intervals import find_best_interval
+
+plt.ioff()  # shut off interactive mode
 
 
 def sample_points_from_probability(size):
@@ -121,4 +126,22 @@ def part_e():
 
 
 if __name__ == "__main__":
-    part_c()
+    parser = OptionParser()
+    parser.add_option("-a", "--q1a", action='store_true', help="Run question 1 part (a)")
+    parser.add_option("-c", "--q1c", action='store_true', help="Run question 1 part (c)")
+    parser.add_option("-d", "--q1d", action='store_true', help="Run question 1 part (d)")
+    parser.add_option("-e", "--q1e", action='store_true', help="Run question 1 part (e)")
+    (options, args) = parser.parse_args()
+
+    if options.q1a:
+        print 'Running Question 1 part (a)...'
+        part_a()
+    elif options.c:
+        print 'Running Question 1 part (c)...'
+        part_a()
+    elif options.d:
+        print 'Running Question 1 part (d)...'
+        part_d()
+    elif options.e:
+        print 'Running Question 1 part (e)...'
+        part_e()
