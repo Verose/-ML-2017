@@ -39,11 +39,22 @@ def part_a():
     for interval in intervals:
         plt.plot(interval, [0.5, 0.5], 'b')
 
-    plt.show()
+    plt.show()  # todo: savefig
 
 
 def calculate_true_error(intervals):
     # todo: calculate true error
+    points = [0, 0.25, 0.5, 0.75, 1, intervals[0][0], intervals[0][1], intervals[1][0], intervals[1][1]]
+    points.sort()
+
+    last_point = -1
+    for point in points:
+        if last_point == -1:
+            last_point = point
+            continue
+        distance = point - last_point
+
+
     return 0.5
 
 
@@ -55,7 +66,7 @@ def part_c():
     for m in m_range:
         sum_empirical_error = 0.0
         sum_true_error = 0.0
-        for _ in range(1, 101):  # T = 100
+        for _ in range(1, T + 1):
             #  (i) Draw a sample of size m and run the ERM algorithm on it
             xs, ys = sample_points_from_probability(m)
             intervals, best_error = find_best_interval(xs, ys, k=2)
@@ -78,10 +89,17 @@ def part_c():
 
     plt.scatter(m_range, average_empirical_error, marker='o', label='empirical')
     plt.scatter(m_range, average_true_error, marker='+', label='true')
-    plt.show()
+    plt.show()  # todo: savefig
 
 
 def part_d():
+    sample_size = 50
+    xs, ys = sample_points_from_probability(sample_size)
+    results = []
+    for i in range(1, 21):
+        intervals, best_error = find_best_interval(xs, ys, k=20)
+        true_error = calculate_true_error(intervals)
+        results.append((best_error, true_error))
     pass
 
 
