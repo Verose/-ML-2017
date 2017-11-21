@@ -8,7 +8,7 @@ from intervals import find_best_interval
 plt.ioff()  # shut off interactive mode
 
 
-def sample_points_from_probability(size):
+def sample_points_from_distribution(size):
     """ P[y = 1|x] = (
         0.8 if x in [0, 0.25] or x in [0.5, 0.75]
         0.1 if x in [0.25, 0.5] or x in [0.75, 1]"""
@@ -26,7 +26,7 @@ def sample_points_from_probability(size):
 
 def part_a():
     sample_size = 100
-    xs, ys = sample_points_from_probability(sample_size)
+    xs, ys = sample_points_from_distribution(sample_size)
     intervals, best_error = find_best_interval(xs, ys, k=2)
 
     plt.xticks([0, 0.25, 0.5, 0.75, 1])
@@ -85,7 +85,7 @@ def part_c():
         sum_true_error = 0.0
         for _ in range(1, T + 1):
             #  (i) Draw a sample of size m and run the ERM algorithm on it
-            xs, ys = sample_points_from_probability(m)
+            xs, ys = sample_points_from_distribution(m)
             intervals, best_error = find_best_interval(xs, ys, k=2)
 
             #  (ii) Calculate the empirical error for the returned hypothesis
@@ -111,14 +111,29 @@ def part_c():
 
 
 def part_d():
-    sample_size = 50
-    xs, ys = sample_points_from_probability(sample_size)
-    results = []
-    for i in range(1, 21):
-        intervals, best_error = find_best_interval(xs, ys, k=20)
-        true_error = calculate_true_error(intervals)
-        results.append((best_error, true_error))
-    pass
+    # Find the best ERM hypothesis for k=1,2,...,20
+    m = 50
+    empirical_error = []
+    true_error = []
+    k_range = range(1, 21)
+    xs, ys = sample_points_from_distribution(m)
+    for k in k_range:
+        intervals, best_error = find_best_interval(xs, ys, k=k)
+        empirical_error += [float(best_error) / m]
+        true_error += [calculate_true_error(intervals)]
+
+    # plot the empirical and true errors as a function of k.
+    plt.xlabel('k')
+    plt.ylabel('errors')
+    plt.title('Empirical error vs True error')
+    fig = plt.gcf()
+    fig.canvas.set_window_title('Programming Assignment: Question 1(d)')
+
+    plt.plot(k_range, empirical_error, label='empirical error')
+    plt.plot(k_range, true_error, label='true error')
+    plt.legend()
+    plt.savefig('q1_part_d.png')
+    plt.clf()
 
 
 def part_e():
@@ -136,12 +151,12 @@ if __name__ == "__main__":
     if options.q1a:
         print 'Running Question 1 part (a)...'
         part_a()
-    elif options.c:
+    elif options.q1c:
         print 'Running Question 1 part (c)...'
         part_a()
-    elif options.d:
+    elif options.q1d:
         print 'Running Question 1 part (d)...'
         part_d()
-    elif options.e:
+    elif options.q1e:
         print 'Running Question 1 part (e)...'
         part_e()
