@@ -54,7 +54,7 @@ def part_a():
 def find_empirical_error(intervals, xs, ys):
     empirical_error = 0
     m = len(xs)
-    for i in range(1, m + 1):
+    for i in range(0, m ):
         is_point_positive =  False
         for interval in intervals:
             if interval[0] >= xs[i] >= interval[1]:
@@ -157,10 +157,10 @@ def part_e():
     minimum_empirical_error = 2*m
     best_hypothesis_empirical = -1
     best_hypothesis_true_error = -1
-    minimum_true_error = -1
+    minimum_true_error = 2.0
     best_hypothesis = -1
     k_range = range(1, 21)
-    k_holdout_range = range(1, 51)
+    k_holdout_range = range(0, 50)
     xs, ys = sample_points_from_distribution(m)
     xs_holdout, ys_holdout = sample_points_from_distribution(m)
     for k in k_range:
@@ -174,6 +174,8 @@ def part_e():
                 best_hypothesis_empirical = k
                 best_hypothesis_true_error = curr_true_error
 
+        print("true error: ", curr_true_error)
+        print("minimum_true_error: ", minimum_true_error)
         if minimum_true_error > curr_true_error:
             minimum_true_error = curr_true_error
             best_hypothesis = k
@@ -192,11 +194,11 @@ def part_e():
     plt.savefig('q1_part_d.png')
     plt.clf()
 
-    print("the minimum empirical error is: " + minimum_empirical_error)
-    print("the minimum empirical error is in k: " + best_hypothesis_empirical)
-    print("the minimum empirical error is with true error: " + best_hypothesis_true_error)
-    print("the minimum true error is: " + minimum_true_error)
-    print("best hypothesis is: " + best_hypothesis)
+    print("the minimum empirical error is: ", minimum_empirical_error)
+    print("the minimum empirical error is in k: ", best_hypothesis_empirical)
+    print("the minimum empirical error is with true error: ", best_hypothesis_true_error)
+    print("the minimum true error is: ", minimum_true_error)
+    print("best hypothesis is: ", best_hypothesis)
 
     pass
 
