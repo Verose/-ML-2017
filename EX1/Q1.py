@@ -51,6 +51,19 @@ def part_a():
     plt.clf()
 
 
+def find_empirical_error(intervals, xs, ys):
+    empirical_error = 0
+    m = len(xs)
+    for i in range(1, m + 1):
+        is_point_positive =  False
+        for interval in intervals:
+            if interval[0] >= xs[i] >= interval[1]:
+                is_point_positive = True
+        if (is_point_positive and ys[i] == 0) or ((not is_point_positive) and ys[i] == 1):
+            ++empirical_error
+
+    return empirical_error
+
 def calculate_true_error(intervals):
     # denote: A: [0, 0.25] U [0.5, 0.75]
     # denote: B: [0.25, 0.5] U [0.75, 1]
@@ -137,6 +150,54 @@ def part_d():
 
 
 def part_e():
+    # Find the best ERM hypothesis for k=1,2,...,20
+    m = 50
+    empirical_error = []
+    true_error = []
+    minimum_empirical_error = 2*m
+    best_hypothesis_empirical = -1
+    best_hypothesis_true_error = -1
+    minimum_true_error = -1
+    best_hypothesis = -1
+    k_range = range(1, 21)
+    k_holdout_range = range(1, 51)
+    xs, ys = sample_points_from_distribution(m)
+    xs_holdout, ys_holdout = sample_points_from_distribution(m)
+    for k in k_range:
+        intervals, best_error = find_best_interval(xs, ys, k=k)
+        curr_true_error = [calculate_true_error(intervals)]
+        true_error += curr_true_error
+        for k_holdout in k_holdout_range:
+            holdout_empirical_error = find_empirical_error(intervals,xs_holdout, ys_holdout)
+            if minimum_empirical_error > (holdout_empirical_error + best_error):
+                minimum_empirical_error = holdout_empirical_error + best_error
+                best_hypothesis_empirical = k
+                best_hypothesis_true_error = curr_true_error
+
+        if minimum_true_error > curr_true_error:
+            minimum_true_error = curr_true_error
+            best_hypothesis = k
+        empirical_error += [float(best_error) / m]
+
+    # plot the empirical and true errors as a function of k.
+    plt.xlabel('k')
+    plt.ylabel('errors')
+    plt.title('Empirical error vs True error')
+    fig = plt.gcf()
+    fig.canvas.set_window_title('Programming Assignment: Question 1(d)')
+
+    plt.plot(k_range, empirical_error, label='empirical error')
+    plt.plot(k_range, true_error, label='true error')
+    plt.legend()
+    plt.savefig('q1_part_d.png')
+    plt.clf()
+
+    print("the minimum empirical error is: " + minimum_empirical_error)
+    print("the minimum empirical error is in k: " + best_hypothesis_empirical)
+    print("the minimum empirical error is with true error: " + best_hypothesis_true_error)
+    print("the minimum true error is: " + minimum_true_error)
+    print("best hypothesis is: " + best_hypothesis)
+
     pass
 
 
