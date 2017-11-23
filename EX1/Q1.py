@@ -1,7 +1,9 @@
 from optparse import OptionParser
 
-import matplotlib.pyplot as plt
 import numpy
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 
 from intervals import find_best_interval
 
@@ -72,7 +74,7 @@ def calculate_true_error(intervals):
     for interval in intervals:
         if 0 <= interval[0] <= 0.25:
             len_a += max(0.0, min(0.25, interval[1]) - max(0, interval[0]))
-        if 0.25 < interval[0] < 0.75:
+        if 0.25 <= interval[0] <= 0.75:
             len_a += max(0.0, min(0.75, interval[1]) - max(0.5, interval[0]))
             if 0.25 < interval[0] < 0.5:
                 len_b += max(0.0, min(0.5, interval[1]) - max(0.25, interval[0]))
@@ -90,8 +92,8 @@ def calculate_true_error(intervals):
 def part_c():
     T = 100
     m_range = range(10, 101, 5)
-    average_empirical_error = []
-    average_true_error = []
+    empirical_error_average = []
+    true_error_average = []
     for m in m_range:
         sum_empirical_error = 0.0
         sum_true_error = 0.0
@@ -105,8 +107,8 @@ def part_c():
 
             #  (iii) Calculate the true error for the returned hypothesis
             sum_true_error += calculate_true_error(intervals)
-        average_empirical_error += [sum_empirical_error / T]
-        average_true_error += [sum_true_error / T]
+        empirical_error_average += [sum_empirical_error / T]
+        true_error_average += [sum_true_error / T]
 
     # Plot the average empirical and true errors, averaged across the T runs, as a function of m
     plt.xlabel('m')
@@ -115,8 +117,8 @@ def part_c():
     fig = plt.gcf()
     fig.canvas.set_window_title('Programming Assignment: Question 1(c)')
 
-    plt.scatter(m_range, average_empirical_error, marker='o', label='empirical error')
-    plt.scatter(m_range, average_true_error, marker='+', label='true error')
+    plt.scatter(m_range, empirical_error_average, marker='o', label='empirical error')
+    plt.scatter(m_range, true_error_average, marker='+', label='true error')
     plt.legend()
     plt.savefig('q1_part_c.png')
     plt.clf()
@@ -141,8 +143,8 @@ def part_d():
     fig = plt.gcf()
     fig.canvas.set_window_title('Programming Assignment: Question 1(d)')
 
-    plt.plot(k_range, empirical_error, label='empirical error')
-    plt.plot(k_range, true_error, label='true error')
+    plt.scatter(k_range, empirical_error, marker='o', label='empirical error')
+    plt.scatter(k_range, true_error, marker='+', label='true error')
     plt.legend()
     plt.savefig('q1_part_d.png')
     plt.clf()
@@ -187,8 +189,8 @@ def part_e():
     fig = plt.gcf()
     fig.canvas.set_window_title('Programming Assignment: Question 1(e)')
 
-    plt.plot(k_range, empirical_error, label='empirical error')
-    plt.plot(k_range, true_error, label='true error')
+    plt.plot(k_range, empirical_error, marker='o', label='empirical error')
+    plt.plot(k_range, true_error, marker='+', label='true error')
     plt.legend()
     plt.savefig('q1_part_e.png')
     plt.clf()
