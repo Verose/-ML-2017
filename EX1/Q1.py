@@ -48,7 +48,7 @@ def part_a():
         else:
             plt.plot(interval, [0.5, 0.5], 'b')
 
-    plt.legend()
+    plt.legend(loc=7)
     plt.savefig('q1_part_a.png')
     plt.clf()
 
@@ -193,10 +193,10 @@ def part_e_cross_validation():
     plt.clf()
 
 
-def part_e_holdout():
+def part_e():
     m = 50
     k_range = range(1, 21)
-    empirical_error = []
+    empirical_error_train = []
     empirical_error_test = []
     true_error = []
     xs_test, ys_test = sample_points_from_distribution(m)
@@ -205,11 +205,9 @@ def part_e_holdout():
     # Find the best ERM hypothesis for k=1,2,...,20
     for k in k_range:
         intervals, best_error = find_best_interval(xs_train, ys_train, k=k)
-        curr_empirical_err = float(calculate_empirical_error(intervals, xs_test, ys_test))/(m)
-        empirical_error += [curr_empirical_err]
+        empirical_error_train += [float(best_error) / m]
         true_error += [float(calculate_true_error(intervals))]
-        empirical_error_test += [best_error]
-        print(curr_empirical_err)
+        empirical_error_test += [float(calculate_empirical_error(intervals, xs_test, ys_test)) / m]
 
     # plot the empirical and true errors as a function of k.
     plt.xlabel('k')
@@ -218,78 +216,12 @@ def part_e_holdout():
     fig = plt.gcf()
     fig.canvas.set_window_title('Programming Assignment: Question 1(e)')
 
-    plt.scatter(k_range, empirical_error, marker='o', label='empirical error')
     plt.scatter(k_range, true_error, marker='+', label='true error')
+    plt.scatter(k_range, empirical_error_train, marker='o', label='empirical error for train')
+    plt.scatter(k_range, empirical_error_test, marker='x', label='empirical error for test')
     plt.legend()
     plt.savefig('q1_part_e.png')
     plt.clf()
-
-    # plot the empirical and true errors as a function of k.
-    plt.xlabel('k')
-    plt.ylabel('errors')
-    plt.title('Empirical error vs True error')
-    fig = plt.gcf()
-    fig.canvas.set_window_title('Programming Assignment: Question 1(e)')
-
-    plt.scatter(k_range, empirical_error_test, marker='o', label='empirical_error_test error')
-    plt.scatter(k_range, true_error, marker='+', label='true error')
-    plt.legend()
-    plt.savefig('q1_part_d.png')
-    plt.clf()
-
-
-def part_e():
-    # Find the best ERM hypothesis for k=1,2,...,20
-    m = 50
-    empirical_error = []
-    true_error = []
-    minimum_empirical_error = 2*m
-    best_hypothesis_empirical = -1
-    best_hypothesis_true_error = -1
-    minimum_true_error = 2.0
-    best_hypothesis = -1
-    k_range = range(1, 21)
-    k_holdout_range = range(0, 50)
-    xs, ys = sample_points_from_distribution(m)
-    xs_holdout, ys_holdout = sample_points_from_distribution(m)
-    for k in k_range:
-        intervals, best_error = find_best_interval(xs, ys, k=k)
-        curr_true_error = [calculate_true_error(intervals)]
-        true_error += curr_true_error
-        for k_holdout in k_holdout_range:
-            holdout_empirical_error = calculate_empirical_error(intervals, xs_holdout, ys_holdout)
-            if minimum_empirical_error > (holdout_empirical_error + best_error):
-                minimum_empirical_error = holdout_empirical_error + best_error
-                best_hypothesis_empirical = k
-                best_hypothesis_true_error = curr_true_error
-
-        print("true error: ", curr_true_error)
-        print("minimum_true_error: ", minimum_true_error)
-        if minimum_true_error > curr_true_error:
-            minimum_true_error = curr_true_error
-            best_hypothesis = k
-        empirical_error += [float(best_error) / m]
-
-    # plot the empirical and true errors as a function of k.
-    plt.xlabel('k')
-    plt.ylabel('errors')
-    plt.title('Empirical error vs True error')
-    fig = plt.gcf()
-    fig.canvas.set_window_title('Programming Assignment: Question 1(e)')
-
-    plt.plot(k_range, empirical_error, marker='o', label='empirical error')
-    plt.plot(k_range, true_error, marker='+', label='true error')
-    plt.legend()
-    plt.savefig('q1_part_e.png')
-    plt.clf()
-
-    print("the minimum empirical error is: ", minimum_empirical_error)
-    print("the minimum empirical error is in k: ", best_hypothesis_empirical)
-    print("the minimum empirical error is with true error: ", best_hypothesis_true_error)
-    print("the minimum true error is: ", minimum_true_error)
-    print("best hypothesis is: ", best_hypothesis)
-
-    pass
 
 
 if __name__ == "__main__":
@@ -297,8 +229,7 @@ if __name__ == "__main__":
     parser.add_option("--a", action='store_true', help="Run question 1 part (a)")
     parser.add_option("--c", action='store_true', help="Run question 1 part (c)")
     parser.add_option("--d", action='store_true', help="Run question 1 part (d)")
-    parser.add_option("--e", action='store_true', help="Run question 1 part (e) using holdout validation")
-    parser.add_option("--ecv", action='store_true', help="Run question 1 part (e) using cross validation")
+    parser.add_option("--e", action='store_true', help="Run question 1 part (e)")
     (options, args) = parser.parse_args()
 
     if options.a:
@@ -306,13 +237,12 @@ if __name__ == "__main__":
         part_a()
     elif options.c:
         print 'Running Question 1 part (c)...'
-        part_a()
+        part_c()
     elif options.d:
         print 'Running Question 1 part (d)...'
         part_d()
     elif options.e:
-        print 'Running Question 1 part (e) with holdout validation...'
-        part_e_holdout()
-    elif options.ecv:
-        print 'Running Question 1 part (e) with cross validation...'
-        part_e_cross_validation()
+        print 'Running Question 1 part (e)...'
+        part_e()
+    else:
+        print 'Error: please run \'--help\' to see options'
