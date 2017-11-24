@@ -197,20 +197,19 @@ def part_e_holdout():
     m = 50
     k_range = range(1, 21)
     empirical_error = []
+    empirical_error_test = []
     true_error = []
-    xs, ys = sample_points_from_distribution(m)
-    rel = 40
-    xs_train = xs[:rel]
-    ys_train = ys[:rel]
-
-    xs_test = xs[rel:]
-    ys_test = ys[rel:]
+    xs_test, ys_test = sample_points_from_distribution(m)
+    xs_train, ys_train = sample_points_from_distribution(m)
 
     # Find the best ERM hypothesis for k=1,2,...,20
     for k in k_range:
         intervals, best_error = find_best_interval(xs_train, ys_train, k=k)
-        empirical_error += [float(calculate_empirical_error(intervals, xs_test, ys_test))/(m-rel)]
+        curr_empirical_err = float(calculate_empirical_error(intervals, xs_test, ys_test))/(m)
+        empirical_error += [curr_empirical_err]
         true_error += [float(calculate_true_error(intervals))]
+        empirical_error_test += [best_error]
+        print(curr_empirical_err)
 
     # plot the empirical and true errors as a function of k.
     plt.xlabel('k')
@@ -225,6 +224,19 @@ def part_e_holdout():
     plt.savefig('q1_part_e.png')
     plt.clf()
 
+    # plot the empirical and true errors as a function of k.
+    plt.xlabel('k')
+    plt.ylabel('errors')
+    plt.title('Empirical error vs True error')
+    fig = plt.gcf()
+    fig.canvas.set_window_title('Programming Assignment: Question 1(e)')
+
+    plt.scatter(k_range, empirical_error_test, marker='o', label='empirical_error_test error')
+    plt.scatter(k_range, true_error, marker='+', label='true error')
+    plt.legend()
+    plt.savefig('q1_part_d.png')
+    plt.clf()
+
 
 def part_e():
     # Find the best ERM hypothesis for k=1,2,...,20
@@ -237,7 +249,7 @@ def part_e():
     minimum_true_error = 2.0
     best_hypothesis = -1
     k_range = range(1, 21)
-    k_holdout_range = range(0, 51)
+    k_holdout_range = range(0, 50)
     xs, ys = sample_points_from_distribution(m)
     xs_holdout, ys_holdout = sample_points_from_distribution(m)
     for k in k_range:
