@@ -82,7 +82,7 @@ def part_c():
     fig = plt.gcf()
     fig.canvas.set_window_title('Programming Assignment: Question 1(c)')
 
-    plt.plot(acc_range, accuracies, marker='o', label='Prediction Accuracy')
+    plt.plot(acc_range, accuracies, label='Prediction Accuracy')
     plt.legend()
     plt.savefig('q1_part_c.png')
     plt.clf()
@@ -104,7 +104,7 @@ def part_d():
     fig = plt.gcf()
     fig.canvas.set_window_title('Programming Assignment: Question 1(d)')
 
-    plt.plot(acc_range, accuracies, marker='o', label='Prediction Accuracy')
+    plt.plot(acc_range, accuracies, label='Prediction Accuracy')
     plt.legend()
     plt.savefig('q1_part_d.png')
     plt.clf()
