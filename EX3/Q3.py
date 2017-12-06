@@ -17,20 +17,20 @@ def load_data():
     labels = mnist['target']
 
     # binary classification of a digit as either 0 or 8
-    bin_class1, bin_class2 = 0, 8
-    train_perm = numpy.where((labels[:60000] == bin_class1) | (labels[:60000] == bin_class2))[0]
+    plus, minus = 0, 8
+    train_perm = numpy.where((labels[:60000] == plus) | (labels[:60000] == minus))[0]
     train_idx = numpy.random.RandomState(0).permutation(train_perm)
-    test_perm = numpy.where((labels[60000:] == bin_class1) | (labels[60000:] == bin_class2))[0]
+    test_perm = numpy.where((labels[60000:] == plus) | (labels[60000:] == minus))[0]
     test_idx = numpy.random.RandomState(0).permutation(test_perm) + 60000
 
     train_data_unscaled = data[train_idx[:6000], :].astype(float)
-    train_labels = (labels[train_idx[:6000]] == (bin_class1 or bin_class2)) * 2 - 1
+    train_labels = (labels[train_idx[:6000]] == (plus or minus)) * 2 - 1
 
     validation_data_unscaled = data[train_idx[6000:], :].astype(float)
-    validation_labels = (labels[train_idx[6000:]] == (bin_class1 or bin_class2)) * 2 - 1
+    validation_labels = (labels[train_idx[6000:]] == (plus or minus)) * 2 - 1
 
     test_data_unscaled = data[test_idx, :].astype(float)
-    test_labels = (labels[test_idx] == (bin_class1 or bin_class2)) * 2 - 1
+    test_labels = (labels[test_idx] == (plus or minus)) * 2 - 1
 
     # mean-center each coordinate of our data points
     train_data = sklearn.preprocessing.scale(train_data_unscaled, with_std=False)
