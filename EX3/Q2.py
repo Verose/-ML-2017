@@ -129,7 +129,7 @@ def part_d():
             plt.title('x as a picture')
             fig = plt.gcf()
             fig.canvas.set_window_title('Programming Assignment: Question 2(b)')
-            plt.savefig('q2_part_c_{}.png'.format(failures))
+            plt.savefig('q2_part_d_{}.png'.format(failures))
         if failures == 2:
             break
 
