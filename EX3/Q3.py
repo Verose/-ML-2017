@@ -1,3 +1,5 @@
+from optparse import OptionParser
+
 import matplotlib
 import numpy
 import numpy.random
@@ -105,5 +107,9 @@ def part_abcde():
 
 
 if __name__ == "__main__":
+    help_text = """ Run question 3 all parts. No parameters are required. """
+    parser = OptionParser(epilog=help_text)
+    (_, _) = parser.parse_args()
+
     print 'Running Question 3 all parts...\n'
     part_abcde()
