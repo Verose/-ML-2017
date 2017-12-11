@@ -6,6 +6,7 @@ import random
 import numpy as np
 import math
 
+
 class Network(object):
 
     def __init__(self, sizes):
@@ -42,8 +43,6 @@ class Network(object):
                 self.update_mini_batch(mini_batch, learning_rate)
             print ("Epoch {0} test accuracy: {1}".format(j, self.one_label_accuracy(test_data)))
 
-
-
     def update_mini_batch(self, mini_batch, learning_rate):
         """Update the network's weights and biases by applying
         stochastic gradient descent using backpropagation to a single mini batch.
@@ -60,20 +59,18 @@ class Network(object):
                        for b, nb in zip(self.biases, nabla_b)]
 
     def backprop(self, x, y):
-        #TODO: Your backprop implementation.
+        # TODO: Your backprop implementation.
+        pass
 
     def one_label_accuracy(self, data):
         """Return accuracy of network on data with numeric labels"""
-        output_results = [(np.argmax(self.network_output_before_softmax(x)), y)
-         for (x, y) in data]
+        output_results = [(np.argmax(self.network_output_before_softmax(x)), y) for (x, y) in data]
         return sum(int(x == y) for (x, y) in output_results)/float(len(data))
 
-    def one_hot_accuracy(self,data):
+    def one_hot_accuracy(self, data):
         """Return accuracy of network on data with one-hot labels"""
-        output_results = [(np.argmax(self.network_output_before_softmax(x)), np.argmax(y))
-                          for (x, y) in data]
+        output_results = [(np.argmax(self.network_output_before_softmax(x)), np.argmax(y)) for (x, y) in data]
         return sum(int(x == y) for (x, y) in output_results) / float(len(data))
-
 
     def network_output_before_softmax(self, x):
         """Return the output of the network before softmax if ``x`` is input."""
@@ -92,7 +89,7 @@ class Network(object):
         for (x, y) in data:
             net_output_before_softmax = self.network_output_before_softmax(x)
             net_output_after_softmax = self.output_softmax(net_output_before_softmax)
-            loss_list.append(np.dot(-np.log(net_output_after_softmax).transpose(),y).flatten()[0])
+            loss_list.append(np.dot(-np.log(net_output_after_softmax).transpose(), y).flatten()[0])
         return sum(loss_list) / float(len(data))
 
     def output_softmax(self, output_activations):
@@ -108,6 +105,7 @@ class Network(object):
 def sigmoid(z):
     """The sigmoid function."""
     return 1.0/(1.0+np.exp(-z))
+
 
 def sigmoid_derivative(z):
     """Derivative of the sigmoid function."""

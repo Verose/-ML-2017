@@ -7,6 +7,7 @@ import gzip
 
 import numpy as np
 
+
 def load(train_size, test_size):
     """Return a tuple containing ``(training_data, test_data)``.
     In particular, ``train_from_file`` is a list containing 50,000
@@ -24,7 +25,7 @@ def load(train_size, test_size):
     Hence, we're using different label formats for
     the training data and the test data.  """
     f = gzip.open('./mnist.pkl.gz', 'rb')
-    #train_from_file, validation_from_file, test_from_file = pickle.load(f, encoding='iso-8859-1')
+    # train_from_file, validation_from_file, test_from_file = pickle.load(f, encoding='iso-8859-1')
     train_from_file, validation_from_file, test_from_file = pickle.load(f)
     f.close()
     training_inputs = [np.reshape(x, (784, 1)) for x in train_from_file[0]]
@@ -33,11 +34,12 @@ def load(train_size, test_size):
     test_inputs = [np.reshape(x, (784, 1)) for x in test_from_file[0]]
     test_data = list(zip(test_inputs, test_from_file[1]))
     np.random.seed(8)
-    training_idx = np.random.choice(50000,train_size, replace=False)
+    training_idx = np.random.choice(50000, train_size, replace=False)
     training_data = [training_data[i] for i in training_idx]
-    test_idx = np.random.choice(10000,test_size, replace=False)
+    test_idx = np.random.choice(10000, test_size, replace=False)
     test_data = [test_data[i] for i in test_idx]
-    return (training_data, test_data)
+    return training_data, test_data
+
 
 def vectorized_result(j):
     """Return a 10-dimensional unit vector with a 1.0 in the jth
