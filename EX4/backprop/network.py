@@ -4,7 +4,10 @@ network.py
 
 import random
 import numpy as np
-import math
+import matplotlib
+
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 
 
 class Network(object):
@@ -25,6 +28,7 @@ class Network(object):
         self.biases = [np.random.randn(y, 1) for y in sizes[1:]]
         self.weights = [np.random.randn(y, x)
                         for x, y in zip(sizes[:-1], sizes[1:])]
+        self.nabla_b = []
 
     def SGD(self, training_data, epochs, mini_batch_size, learning_rate,
             test_data):
@@ -43,6 +47,110 @@ class Network(object):
                 self.update_mini_batch(mini_batch, learning_rate)
             print ("Epoch {0} test accuracy: {1}".format(j, self.one_label_accuracy(test_data)))
 
+    def SGD_part_b(self, training_data, epochs, mini_batch_size, learning_rate,
+                   test_data):
+        """Train the neural network using mini-batch stochastic
+        gradient descent.  The ``training_data`` is a list of tuples
+        ``(x, y)`` representing the training inputs and the desired
+        outputs.  """
+        n = len(training_data)
+        training_accuracy = []
+        training_loss = []
+        test_accuracy = []
+        for j in range(epochs):
+            random.shuffle(list(training_data))
+            mini_batches = [
+                training_data[k:k+mini_batch_size]
+                for k in range(0, n, mini_batch_size)]
+            for mini_batch in mini_batches:
+                self.update_mini_batch(mini_batch, learning_rate)
+            test_accuracy += [self.one_label_accuracy(test_data)]
+            training_accuracy += [self.one_hot_accuracy(training_data)]
+            training_loss += [self.loss(training_data)]
+
+        # Plot the training accuracy, training loss (`(W)) and test accuracy across epochs (3 different plots).
+        plt.xlabel('epochs')
+        plt.ylabel('accuracy')
+        plt.title('Training Neural Networks')
+        fig = plt.gcf()
+        fig.canvas.set_window_title('Programming Assignment: Question 2(b)')
+
+        plt.plot(xrange(epochs), training_accuracy, marker='o', label='training accuracy')
+        plt.legend()
+        plt.savefig('../q2_part_b_train_acc.png')
+        plt.clf()
+
+        plt.xlabel('epochs')
+        plt.ylabel('accuracy')
+        plt.title('Training Neural Networks')
+        fig = plt.gcf()
+        fig.canvas.set_window_title('Programming Assignment: Question 2(b)')
+
+        plt.plot(xrange(epochs), test_accuracy, marker='+', label='test accuracy')
+        plt.legend()
+        plt.savefig('../q2_part_b_test_acc.png')
+        plt.clf()
+
+        plt.xlabel('epochs')
+        plt.ylabel('accuracy')
+        plt.title('Training Neural Networks')
+        fig = plt.gcf()
+        fig.canvas.set_window_title('Programming Assignment: Question 2(b)')
+
+        plt.plot(xrange(epochs), training_loss, marker='*', label='training loss')
+        plt.legend()
+        plt.savefig('../q2_part_b_train_loss.png')
+        plt.clf()
+
+        print 'Training accuracy at last epoch: {}'.format(training_accuracy[epochs-1])
+        print 'Test accuracy at last epoch: {}'.format(test_accuracy[epochs-1])
+        print 'Training loss at last epoch: {}'.format(training_loss[epochs-1])
+
+    def SGD_part_c(self, training_data, epochs, mini_batch_size, learning_rate,
+                   test_data):
+        """Train the neural network using mini-batch stochastic
+        gradient descent.  The ``training_data`` is a list of tuples
+        ``(x, y)`` representing the training inputs and the desired
+        outputs.  """
+        n = len(training_data)
+        test_accuracy = []
+        for j in range(epochs):
+            random.shuffle(list(training_data))
+            mini_batches = [
+                training_data[k:k+mini_batch_size]
+                for k in range(0, n, mini_batch_size)]
+            for mini_batch in mini_batches:
+                self.update_mini_batch(mini_batch, learning_rate)
+            test_accuracy += [self.one_label_accuracy(test_data)]
+
+        print 'Test accuracy at last epoch: {}'.format(test_accuracy[epochs-1])
+
+    def SGD_part_d(self, training_data, epochs, mini_batch_size, learning_rate,
+                   test_data):
+        """Train the neural network using mini-batch stochastic
+        gradient descent.  The ``training_data`` is a list of tuples
+        ``(x, y)`` representing the training inputs and the desired
+        outputs.  """
+        test_accuracy = []
+        for j in range(epochs):
+            random.shuffle(list(training_data))
+            self.update_mini_batch(training_data, learning_rate)
+            test_accuracy += [self.one_label_accuracy(test_data)]
+
+        # Plot the values nabla_b for 0 <= i <= 4 across epochs (one plot).
+        plt.xlabel('epochs')
+        plt.ylabel('nabla b norm')
+        plt.title('Vanishing Gradient Phenomenon')
+        fig = plt.gcf()
+        fig.canvas.set_window_title('Programming Assignment: Question 2(b)')
+
+        for i in xrange(self.num_layers-1):
+            plt.plot(xrange(epochs), [np.linalg.norm(arr[i]) for arr in self.nabla_b],
+                     marker='{}'.format(['.', '+', '*', 'x', 'v'][i]), label='layer {}'.format(i))
+        plt.legend()
+        plt.savefig('../q2_part_d.png')
+        plt.clf()
+
     def update_mini_batch(self, mini_batch, learning_rate):
         """Update the network's weights and biases by applying
         stochastic gradient descent using backpropagation to a single mini batch.
@@ -57,10 +165,37 @@ class Network(object):
                         for w, nw in zip(self.weights, nabla_w)]
         self.biases = [b - (learning_rate / len(mini_batch)) * nb
                        for b, nb in zip(self.biases, nabla_b)]
+        self.nabla_b += [nabla_b]
 
     def backprop(self, x, y):
-        # TODO: Your backprop implementation.
-        pass
+        nabla_b = [np.zeros(b.shape) for b in self.biases]
+        nabla_w = [np.zeros(w.shape) for w in self.weights]
+
+        # input
+        a = [x]
+        z = []
+        action = a[0]
+
+        # feed forward
+        for w, b in zip(self.weights, self.biases):
+            curr_z = np.dot(w, action) + b
+            z.append(curr_z)
+            action = sigmoid(curr_z)
+            a.append(action)
+
+        # output the error
+        delta = self.loss_derivative_wr_output_activations(a[-1], y) * sigmoid_derivative(z[-1])
+
+        # back propagate the error
+        nabla_b[-1] = delta
+        nabla_w[-1] = np.dot(delta, a[-2].transpose())
+
+        for l in xrange(self.num_layers-2, 0, -1):
+            delta = np.dot(self.weights[l].transpose(), delta) * sigmoid_derivative(z[l-1])
+            nabla_b[l-1] = delta
+            nabla_w[l-1] = np.dot(delta, a[l-1].transpose())
+
+        return nabla_b, nabla_w
 
     def one_label_accuracy(self, data):
         """Return accuracy of network on data with numeric labels"""
