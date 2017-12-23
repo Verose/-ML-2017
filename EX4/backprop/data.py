@@ -24,7 +24,7 @@ def load(train_size, test_size):
 
     Hence, we're using different label formats for
     the training data and the test data.  """
-    f = gzip.open('./mnist.pkl.gz', 'rb')
+    f = gzip.open('./backprop/mnist.pkl.gz', 'rb')
     # train_from_file, validation_from_file, test_from_file = pickle.load(f, encoding='iso-8859-1')
     train_from_file, validation_from_file, test_from_file = pickle.load(f)
     f.close()
