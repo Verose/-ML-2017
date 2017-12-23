@@ -142,7 +142,7 @@ class Network(object):
         plt.ylabel('nabla b norm')
         plt.title('Vanishing Gradient Phenomenon')
         fig = plt.gcf()
-        fig.canvas.set_window_title('Programming Assignment: Question 2(b)')
+        fig.canvas.set_window_title('Programming Assignment: Question 2(d)')
 
         for i in xrange(self.num_layers-1):
             plt.plot(xrange(epochs), [np.linalg.norm(arr[i]) for arr in self.nabla_b],
