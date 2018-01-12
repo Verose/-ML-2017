@@ -148,7 +148,7 @@ def part_abcdef():
 
         for i, image in enumerate(reconstruction.T):
             plt.imshow(image.reshape(28, 28), interpolation='nearest')
-            plt.savefig('q1_part_e_reconstructed_{}.png'.format(i + 1))
+            plt.savefig('q1_part_e_reconstructed_{}_{}.png'.format(k, i + 1))
             plt.clf()
 
     # part f
@@ -158,8 +158,9 @@ def part_abcdef():
 
     for dim in dimensions:
         X = train_data[:dim]
+        V = eigenvectors[:, :dim]
         reconstruction = numpy.dot(numpy.dot(V, V.T), X.T)
-        losses += [numpy.sum([numpy.linalg.norm(x - reco) for x, reco in zip(X, reconstruction.T)])]
+        losses += [numpy.sum([numpy.linalg.norm(reco - x) for x, reco in zip(X, reconstruction.T)])/dim]
 
     # Plot the PCA objective as a function of k
     plt.xlabel('dimension')
@@ -168,7 +169,7 @@ def part_abcdef():
     fig = plt.gcf()
     fig.canvas.set_window_title('Programming Assignment: Question 1(f)')
 
-    plt.scatter(dimensions, losses, marker='.')
+    plt.scatter(dimensions, losses, marker='o')
     plt.legend()
     plt.savefig('q1_part_f_pca_objective.png')
     plt.clf()
